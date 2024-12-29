@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>売上管理</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>売上管理</h1>
+        
+        <div class="tabs">
+            <button class="tab-button active" data-tab="calculatorTab">計算</button>
+            <button class="tab-button" data-tab="listingTab">出品</button>
+            <button class="tab-button" data-tab="inventoryTab">在庫管理</button>
+            <button class="tab-button" data-tab="statsTab">統計</button>
+            <button class="tab-button" data-tab="historyTab">履歴</button>
+            <button class="tab-button" data-tab="settingsTab">設定</button>
+        </div>
+
+        <div id="calculatorTab" class="tab-content active">
+            <form id="salesForm">
+                <div class="product-selection">
+                    <select id="productName" required>
+                        <option value="">機種を選択</option>
+                        <option value="iPhone6s">iPhone6s</option>
+                        <option value="iPhone6sPlus">iPhone6sPlus</option>
+                        <option value="iPhone7">iPhone7</option>
+                        <option value="iPhone7Plus">iPhone7Plus</option>
+                        <option value="iPhone8">iPhone8</option>
+                        <option value="iPhone8Plus">iPhone8Plus</option>
+                        <option value="iPhoneX">iPhoneX</option>
+                        <option value="iPhoneXS">iPhoneXS</option>
+                        <option value="iPhoneXSMax">iPhoneXSMax</option>
+                        <option value="iPhoneXR">iPhoneXR</option>
+                        <option value="iPhone11">iPhone11</option>
+                        <option value="iPhone11Pro">iPhone11Pro</option>
+                        <option value="iPhone11ProMax">iPhone11ProMax</option>
+                        <option value="iPhone12">iPhone12</option>
+                        <option value="iPhone12Mini">iPhone12Mini</option>
+                        <option value="iPhone12Pro">iPhone12Pro</option>
+                        <option value="iPhone12ProMax">iPhone12ProMax</option>
+                        <option value="iPhoneSE2">iPhoneSE2</option>
+                    </select>
+
+                    <select id="storage" required>
+                        <option value="">容量を選択</option>
+                        <option value="16">16GB</option>
+                        <option value="32">32GB</option>
+                        <option value="64">64GB</option>
+                        <option value="128">128GB</option>
+                        <option value="256">256GB</option>
+                        <option value="512">512GB</option>
+                    </select>
+                </div>
+
+                <label for="purchasePrice">仕入れ値:</label>
+                <input type="number" id="purchasePrice" required>
+
+                <div class="form-group">
+                    <label for="partsName1">パーツ1:</label>
+                    <select id="partsName1">
+                        <option value="">選択してください</option>
+                        <option value="lcd">液晶パネル</option>
+                        <option value="battery">バッテリー</option>
+                        <option value="batteryTag">バッテリータブ</option>
+                        <option value="homeButton">ホームボタン</option>
+                    </select>
+                    <input type="number" id="partsCost1" placeholder="部品1の価格" readonly>
+                </div>
+
+                <div class="parts-toggle">
+                    <button type="button" id="toggleParts" class="toggle-button">追加部品を表示</button>
+                </div>
+
+                <div id="additionalParts" class="hidden">
+                    <div class="form-group">
+                        <label for="partsName2">パーツ2:</label>
+                        <select id="partsName2">
+                            <option value="">選択してください</option>
+                            <option value="lcd">液晶パネル</option>
+                            <option value="battery">バッテリー</option>
+                            <option value="batteryTag">バッテリータブ</option>
+                            <option value="homeButton">ホームボタン</option>
+                        </select>
+                        <input type="number" id="partsCost2" placeholder="部品2の価格" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="partsName3">パーツ3:</label>
+                        <select id="partsName3">
+                            <option value="">選択してください</option>
+                            <option value="lcd">液晶パネル</option>
+                            <option value="battery">バッテリー</option>
+                            <option value="batteryTag">バッテリータブ</option>
+                            <option value="homeButton">ホームボタン</option>
+                        </select>
+                        <input type="number" id="partsCost3" placeholder="部品3の価格" readonly>
+                    </div>
+                </div>
+
+                <label for="shippingCost">送料:</label>
+                <select id="shippingCost" required>
+                    <option value="210">ゆうパケット (210円)</option>
+                    <option value="450">コンパクト (450円)</option>
+                    <option value="520">宅急便 (520円)</option>
+                </select>
+
+                <div class="form-group">
+                    <label for="sellingPrice">販売価格:</label>
+                    <input type="number" id="sellingPrice" required>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" id="calculateButton" class="full-width-button">計算する</button>
+                    <button type="button" id="saveButton" class="full-width-button">保存する</button>
+                </div>
+            </form>
+
+            <div id="result"></div>
+        </div>
+
+        <div id="listingTab" class="tab-content">
+            <h2>出品情報生成</h2>
+            <form id="listingForm">
+                <div class="form-group">
+                    <label for="listingProductName">商品名:</label>
+                    <select id="listingProductName" required>
+                        <option value="iPhone6s">iPhone6s</option>
+                        <option value="iPhone6sPlus">iPhone6sPlus</option>
+                        <option value="iPhone7">iPhone7</option>
+                        <option value="iPhone7Plus">iPhone7Plus</option>
+                        <option value="iPhone8">iPhone8</option>
+                        <option value="iPhone8Plus">iPhone8Plus</option>
+                        <option value="iPhoneX">iPhoneX</option>
+                        <option value="iPhoneXS">iPhoneXS</option>
+                        <option value="iPhoneXSMax">iPhoneXSMax</option>
+                        <option value="iPhoneXR">iPhoneXR</option>
+                        <option value="iPhone11">iPhone11</option>
+                        <option value="iPhone11Pro">iPhone11Pro</option>
+                        <option value="iPhone11ProMax">iPhone11ProMax</option>
+                        <option value="iPhone12">iPhone12</option>
+                        <option value="iPhone12Mini">iPhone12Mini</option>
+                        <option value="iPhone12Pro">iPhone12Pro</option>
+                        <option value="iPhone12ProMax">iPhone12ProMax</option>
+                        <option value="iPhoneSE2">iPhoneSE2</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="listingStorage">容量:</label>
+                    <select id="listingStorage" required>
+                        <option value="16">16GB</option>
+                        <option value="32">32GB</option>
+                        <option value="64">64GB</option>
+                        <option value="128">128GB</option>
+                        <option value="256">256GB</option>
+                        <option value="512">512GB</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="color">カラー:</label>
+                    <select id="color" required>
+                        <option value="ブラック">ブラック</option>
+                        <option value="ホワイト">ホワイト</option>
+                        <option value="シルバー">シルバー</option>
+                        <option value="ゴールド">ゴールド</option>
+                        <option value="ローズゴールド">ローズゴールド</option>
+                        <option value="レッド">レッド</option>
+                        <option value="パープル">パープル</option>
+                        <option value="イエロー">イエロー</option>
+                        <option value="グリーン">グリーン</option>
+                        <option value="ブルー">ブルー</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="imei">IMEI:</label>
+                    <input type="text" id="imei" placeholder="35 730809 261977 0">
+                </div>
+
+                <div class="form-group">
+                    <label for="rank">ランク:</label>
+                    <select id="rank" required>
+                        <!-- 設定タブで追加したランクがここに表示されます -->
+                    </select>
+                </div>
+
+                <div class="condition-group">
+                    <h3>商品状態</h3>
+                    <div class="form-group">
+                        <label for="screenCondition">画面:</label>
+                        <select id="screenCondition" required>
+                            <!-- 設定タブで追加した画面状態がここに表示されます -->
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="backCondition">背面:</label>
+                        <select id="backCondition" required>
+                            <!-- 設定タブで追加した外装状態がここに表示されます -->
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sideCondition">側面:</label>
+                        <select id="sideCondition" required>
+                            <!-- 設定タブで追加した外装状態がここに表示されます -->
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="topCondition">上面:</label>
+                        <select id="topCondition" required>
+                            <!-- 設定タブで追加した外装状態がここに表示されます -->
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bottomCondition">底面:</label>
+                        <select id="bottomCondition" required>
+                            <!-- 設定タブで追加した外装状態がここに表示されます -->
+                        </select>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" id="generateContent" class="generate-button">タイトル商品説明を生成</button>
+                </div>
+            </form>
+
+            <div class="preview-section">
+                <h3>タイトルプレビュー</h3>
+                <div class="preview-container">
+                    <div id="titlePreview" class="preview-box"></div>
+                    <button class="copy-button" onclick="copyToClipboard('titlePreview')">コピー</button>
+                </div>
+                
+                <h3>商品説明プレビュー</h3>
+                <div class="preview-container">
+                    <div id="descriptionPreview" class="preview-box"></div>
+                    <button class="copy-button" onclick="copyToClipboard('descriptionPreview')">コピー</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="inventoryTab" class="tab-content">
+            <div class="inventory-header">
+                <h2>在庫管理</h2>
+                <button id="addInventoryItem" class="add-button">新規追加</button>
+            </div>
+            
+            <div class="inventory-table-container">
+                <table id="inventoryTable" class="inventory-table">
+                    <thead>
+                        <tr>
+                            <th>端末</th>
+                            <th>容量</th>
+                            <th>仕入れ値</th>
+                            <th>必要パーツ</th>
+                            <th>パーツ価格</th>
+                            <th>発注状況</th>
+                            <th>販売価格</th>
+                            <th>備考</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventoryTableBody">
+                        <!-- JavaScriptで動的に追加 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="statsTab" class="tab-content">
+            <div class="stats-controls">
+                <select id="statsMonth">
+                    <option value="1">1月</option>
+                    <option value="2">2月</option>
+                    <option value="3">3月</option>
+                    <option value="4">4月</option>
+                    <option value="5">5月</option>
+                    <option value="6">6月</option>
+                    <option value="7">7月</option>
+                    <option value="8">8月</option>
+                    <option value="9">9月</option>
+                    <option value="10">10月</option>
+                    <option value="11">11月</option>
+                    <option value="12">12月</option>
+                </select>
+            </div>
+            <div id="statsContainer">
+                <div class="stats-summary">
+                    <div class="stats-item">
+                        <h4>仕入れ額</h4>
+                        <p id="totalPurchase">0円</p>
+                    </div>
+                    <div class="stats-item">
+                        <h4>総販売額</h4>
+                        <p id="totalSales">0円</p>
+                    </div>
+                    <div class="stats-item">
+                        <h4>総利益</h4>
+                        <p id="totalProfit">0円</p>
+                    </div>
+                    <div class="stats-item">
+                        <h4>平均利益率</h4>
+                        <p id="averageMargin">0%</p>
+                    </div>
+                </div>
+                <div id="deviceList" class="device-list">
+                    <!-- 端末別の集計がここに表示されます -->
+                </div>
+            </div>
+            <div class="stats-chart-container">
+                <canvas id="monthlyProfitChart"></canvas>
+            </div>
+        </div>
+
+        <div id="historyTab" class="tab-content">
+            <div class="history-header">
+                <h3>取引履歴</h3>
+                <div class="controls-container">
+                    <div class="month-selector">
+                        <select id="historyMonth" onchange="updateResultsList()">
+                            <option value="1">1月</option>
+                            <option value="2">2月</option>
+                            <option value="3">3月</option>
+                            <option value="4">4月</option>
+                            <option value="5">5月</option>
+                            <option value="6">6月</option>
+                            <option value="7">7月</option>
+                            <option value="8">8月</option>
+                            <option value="9">9月</option>
+                            <option value="10">10月</option>
+                            <option value="11">11月</option>
+                            <option value="12">12月</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="data-transfer-buttons">
+                <button onclick="exportData()" class="export-button">データエクスポート</button>
+                <button onclick="document.getElementById('importFile').click()" class="import-button">データインポート</button>
+                <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(this.files[0])">
+            </div>
+
+            <div id="resultsList" class="results-list">
+                <!-- 履歴データがここに表示されます -->
+            </div>
+        </div>
+
+        <div id="settingsTab" class="tab-content">
+            <h2>設定</h2>
+            
+            <div class="settings-guide">
+                <h3>使い方</h3>
+                <div class="guide-content">
+                    <p>1. ランク設定：商品の状態ランク（SS、S、A、B、Cなど）を追加します。</p>
+                    <p>2. 画面状態：液晶の状態（新品、傷なし、小傷ありなど）を追加します。</p>
+                    <p>3. 外装状態：外装の状態（傷なし、使用感ありなど）を追加します。</p>
+                    <p>4. 設定を保存：追加した内容を保存します。保存後、出品フォームに反映されます。</p>
+                    <div class="guide-note">
+                        ※ ランクは上から順に良い状態として扱われます（例：1番目→極美品、2番目→上美品）<br>
+                        ※ 各項目は「削除」ボタンで個別に削除できます<br>
+                        ※ 設定は自動的に保存され、ブラウザを閉じても維持されます
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>状態ランク設定</h3>
+                <div id="rankSettings">
+                    <button type="button" id="addRank" class="add-button">新しいランクを追加</button>
+                    <div id="rankList" class="settings-list">
+                        <!-- ランク設定が動的に追加される場所 -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>商品状態設定</h3>
+                <div class="condition-category">
+                    <h4>画面状態</h4>
+                    <div id="screenConditionSettings">
+                        <button type="button" class="add-button" data-type="screen">新しい状態を追加</button>
+                        <div id="screenConditionList" class="settings-list">
+                            <!-- 画面状態設定が動的に追加される場所 -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="condition-category">
+                    <h4>外装状態</h4>
+                    <div id="exteriorConditionSettings">
+                        <button type="button" class="add-button" data-type="exterior">新しい状態を追加</button>
+                        <div id="exteriorConditionList" class="settings-list">
+                            <!-- 外装状態設定が動的に追加される場所 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="button" id="saveSettings" class="save-button">設定を保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- モーダルウィンドウ -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>データ編集</h2>
+            <form id="editForm">
+                <input type="hidden" id="editId">
+                <select id="editProductName" required>
+                    <!-- 同じ機種オプション -->
+                </select>
+                <select id="editStorage" required>
+                    <!-- 同じ容量オプション -->
+                </select>
+                <input type="text" id="editPartsName1" placeholder="部品1">
+                <input type="text" id="editPartsName2" placeholder="部品2">
+                <input type="text" id="editPartsName3" placeholder="部品3">
+                <input type="number" id="editPurchasePrice" placeholder="仕入れ値" required>
+                <input type="number" id="editSellingPrice" placeholder="販売価格" required>
+                <input type="number" id="editShippingCost" placeholder="送料" required>
+                <button type="submit">更新</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="inventory-script.js"></script>
+    <script src="listing-script.js"></script>
+    <script src="stats-script.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
